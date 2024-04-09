@@ -1,11 +1,5 @@
 package org.pmumanagement;
 import java.util.Scanner;
-/**
- * @author ABDESSADIQ BABA HAMOU
- * @since 08/04/2024
- */
-
-
 public class CafeteriaManagement {
     private static Administrator admin = new Administrator();
     private static User user = new User(admin);

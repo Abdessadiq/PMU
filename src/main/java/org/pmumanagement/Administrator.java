@@ -4,11 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.io.*;
 
-
-/**
- * @author ABDESSADIQ BABA HAMOU
- * @since 08/04/2024
- */
 public class Administrator {
     private List<Food> foodCatalog;
     private static final String FILE_PATH = "foodCatalog.txt";
