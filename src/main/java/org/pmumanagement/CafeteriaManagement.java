@@ -12,8 +12,9 @@ public class CafeteriaManagement {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        System.out.println("Welcome to the Cafeteria Management System!");
         while (true) {
-            System.out.println("Menu principal\n1. Admin\n2. Utilisateur\n3. Quitter");
+            System.out.println("\nMain Menu\n1. Admin\n2. User\n3. Exit");
             String choice = scanner.nextLine();
             switch (choice) {
                 case "1":
@@ -23,10 +24,12 @@ public class CafeteriaManagement {
                     userMenu();
                     break;
                 case "3":
+                    admin.saveFoodCatalog(); // Assurez-vous que les changements sont sauvegardés avant de quitter.
+                    System.out.println("Exiting... All changes saved.");
                     System.exit(0);
                     break;
                 default:
-                    System.out.println("Choix invalide, veuillez réessayer.");
+                    System.out.println("Invalid choice, please try again.");
             }
         }
     }
@@ -34,76 +37,85 @@ public class CafeteriaManagement {
     private static void adminMenu() {
         String choice;
         do {
-            System.out.println("\nMenu Administrateur\n" +
-                    "a. Ajouter un aliment\n" +
-                    "b. Supprimer un aliment\n" +
-                    "c. Mettre à jour le pays d'origine d'un aliment\n" +
-                    "d. Générer un rapport\n" +
-                    "e. Retour au menu principal");
+            System.out.println("\nAdmin Menu\n" +
+                    "a. Add new food\n" +
+                    "b. Delete food\n" +
+                    "c. Update food origin\n" +
+                    "d. Generate report\n" +
+                    "e. Return to main menu");
             choice = scanner.nextLine();
             switch (choice) {
                 case "a":
-                    System.out.println("Nom de l'aliment :");
+                    System.out.println("Enter food name:");
                     String name = scanner.nextLine();
-                    System.out.println("Pays d'origine :");
+                    System.out.println("Enter food origin:");
                     String origin = scanner.nextLine();
                     admin.addFood(name, origin);
+                    admin.saveFoodCatalog(); // Sauvegarder immédiatement après l'ajout
                     break;
                 case "b":
-                    System.out.println("Nom de l'aliment à supprimer :");
+                    System.out.println("Enter food name to delete:");
                     name = scanner.nextLine();
                     admin.deleteFood(name);
+                    admin.saveFoodCatalog(); // Sauvegarder immédiatement après la suppression
                     break;
                 case "c":
-                    System.out.println("Nom de l'aliment à mettre à jour :");
+                    System.out.println("Enter food name to update its origin:");
                     name = scanner.nextLine();
-                    System.out.println("Nouveau pays d'origine :");
-                    String newOrigin = scanner.nextLine();
-                    admin.updateFoodOrigin(name, newOrigin);
+                    System.out.println("Enter new origin:");
+                    origin = scanner.nextLine();
+                    admin.updateFoodOrigin(name, origin);
+                    admin.saveFoodCatalog(); // Sauvegarder immédiatement après la mise à jour
                     break;
                 case "d":
                     admin.generateReport();
+                    // Pas besoin de sauvegarder après un rapport
                     break;
                 case "e":
-                    return;
+                    System.out.println("Returning to main menu...");
+                    // Pas besoin de sauvegarder ici car chaque action sauvegarde déjà
+                    break;
                 default:
-                    System.out.println("Choix invalide.");
+                    System.out.println("Invalid option. Please try again.");
             }
         } while (!choice.equals("e"));
     }
 
 
+
     private static void userMenu() {
         String choice;
         do {
-            System.out.println("\nMenu Utilisateur\n" +
-                    "a. Demander un nouvel aliment\n" +
-                    "b. Se plaindre de la non-disponibilité d'un aliment\n" +
-                    "c. Rechercher un aliment\n" +
-                    "d. Retour au menu principal");
+            System.out.println("\nUser Menu\n" +
+                    "a. Request new food item\n" +
+                    "b. Complain about food availability\n" +
+                    "c. Search for food\n" +
+                    "d. Return to main menu");
             choice = scanner.nextLine();
             switch (choice) {
                 case "a":
-                    System.out.println("Nom de l'aliment demandé :");
-                    String name = scanner.nextLine();
-                    user.requestFood(name);
+                    System.out.println("Enter the name of the food item you want to request:");
+                    String foodName = scanner.nextLine();
+                    user.requestFood(foodName);
                     break;
                 case "b":
-                    System.out.println("Nom de l'aliment pour lequel se plaindre :");
-                    name = scanner.nextLine();
-                    user.complainAboutFood(name);
+                    System.out.println("Enter the name of the food item to complain about its availability:");
+                    foodName = scanner.nextLine();
+                    user.complainAboutFood(foodName);
                     break;
                 case "c":
-                    System.out.println("Nom de l'aliment à rechercher :");
-                    name = scanner.nextLine();
-                    user.searchFood(name);
+                    System.out.println("Enter the name of the food item to search:");
+                    foodName = scanner.nextLine();
+                    user.searchFood(foodName);
                     break;
                 case "d":
-                    return;
+                    System.out.println("Returning to main menu...");
+                    break;
                 default:
-                    System.out.println("Choix invalide.");
+                    System.out.println("Invalid option. Please try again.");
             }
         } while (!choice.equals("d"));
     }
+
 
 }

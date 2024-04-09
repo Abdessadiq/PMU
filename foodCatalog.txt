@@ -1,0 +1,5 @@
+pizza,italy
+Suchi,Japan
+Croissant,france
+Curry,india
+Humburger,USA
