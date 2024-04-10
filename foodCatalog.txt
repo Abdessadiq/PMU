@@ -1,5 +1,4 @@
-pizza,italy
 Suchi,Japan
-Croissant,france
-Curry,india
-Humburger,USA
+Croissant,Frensh
+Curry,India
+pizza,Italy

@@ -1,5 +1,6 @@
 package org.pmumanagement;
 import java.util.Scanner;
+
 public class CafeteriaManagement {
     private static Administrator admin = new Administrator();
     private static User user = new User(admin);
@@ -18,7 +19,6 @@ public class CafeteriaManagement {
                     userMenu();
                     break;
                 case "3":
-                    admin.saveFoodCatalog(); // Assurez-vous que les changements sont sauvegardés avant de quitter.
                     System.out.println("Exiting... All changes saved.");
                     System.exit(0);
                     break;
@@ -45,13 +45,11 @@ public class CafeteriaManagement {
                     System.out.println("Enter food origin:");
                     String origin = scanner.nextLine();
                     admin.addFood(name, origin);
-                    admin.saveFoodCatalog(); // Sauvegarder immédiatement après l'ajout
                     break;
                 case "b":
                     System.out.println("Enter food name to delete:");
                     name = scanner.nextLine();
                     admin.deleteFood(name);
-                    admin.saveFoodCatalog(); // Sauvegarder immédiatement après la suppression
                     break;
                 case "c":
                     System.out.println("Enter food name to update its origin:");
@@ -59,23 +57,18 @@ public class CafeteriaManagement {
                     System.out.println("Enter new origin:");
                     origin = scanner.nextLine();
                     admin.updateFoodOrigin(name, origin);
-                    admin.saveFoodCatalog(); // Sauvegarder immédiatement après la mise à jour
                     break;
                 case "d":
                     admin.generateReport();
-                    // Pas besoin de sauvegarder après un rapport
                     break;
                 case "e":
                     System.out.println("Returning to main menu...");
-                    // Pas besoin de sauvegarder ici car chaque action sauvegarde déjà
                     break;
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
         } while (!choice.equals("e"));
     }
-
-
 
     private static void userMenu() {
         String choice;
@@ -90,12 +83,12 @@ public class CafeteriaManagement {
                 case "a":
                     System.out.println("Enter the name of the food item you want to request:");
                     String foodName = scanner.nextLine();
-                    user.requestFood(foodName);
+                    user.requestFood(foodName); // This will invoke handleRequest in Administrator
                     break;
                 case "b":
                     System.out.println("Enter the name of the food item to complain about its availability:");
                     foodName = scanner.nextLine();
-                    user.complainAboutFood(foodName);
+                    user.complainAboutFood(foodName); // This will invoke handleComplaint in Administrator
                     break;
                 case "c":
                     System.out.println("Enter the name of the food item to search:");
@@ -110,6 +103,4 @@ public class CafeteriaManagement {
             }
         } while (!choice.equals("d"));
     }
-
-
 }

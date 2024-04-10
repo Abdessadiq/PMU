@@ -1,42 +1,67 @@
 package org.pmumanagement;
-
-import java.util.LinkedList;
-import java.util.List;
 import java.io.*;
 
 public class Administrator {
-    private List<Food> foodCatalog;
+    private FoodNode head;
     private static final String FILE_PATH = "foodCatalog.txt";
 
     public Administrator() {
-        this.foodCatalog = new LinkedList<>();
+        this.head = null;
         loadFoodCatalog();
     }
 
     public void addFood(String name, String origin) {
         Food newFood = new Food(name, origin);
-        foodCatalog.add(newFood);
+        FoodNode newNode = new FoodNode(newFood);
+        newNode.next = head;
+        head = newNode;
         System.out.println(name + " successfully added.");
+        saveFoodCatalog();
     }
 
     public void deleteFood(String name) {
-        foodCatalog.removeIf(food -> food.getName().equalsIgnoreCase(name));
-        System.out.println(name + " successfully deleted.");
+        if (head == null) {
+            System.out.println("The food catalog is empty.");
+            return;
+        }
+        if (head.food.getName().equalsIgnoreCase(name)) {
+            head = head.next;
+            System.out.println(name + " successfully deleted.");
+            saveFoodCatalog();
+            return;
+        }
+
+        FoodNode current = head;
+        while (current.next != null && !current.next.food.getName().equalsIgnoreCase(name)) {
+            current = current.next;
+        }
+
+        if (current.next != null) {
+            current.next = current.next.next;
+            System.out.println(name + " successfully deleted.");
+            saveFoodCatalog();
+        } else {
+            System.out.println("Food not found.");
+        }
     }
 
     public Food findFood(String name) {
-        for (Food food : foodCatalog) {
-            if (food.getName().equalsIgnoreCase(name)) {
-                return food;
+        FoodNode current = head;
+        while (current != null) {
+            if (current.food.getName().equalsIgnoreCase(name)) {
+                return current.food;
             }
+            current = current.next;
         }
         return null;
     }
 
     public void generateReport() {
         System.out.println("Food Report:");
-        for (Food food : foodCatalog) {
-            System.out.println(food);
+        FoodNode current = head;
+        while (current != null) {
+            System.out.println(current.food);
+            current = current.next;
         }
     }
 
@@ -44,25 +69,39 @@ public class Administrator {
         Food food = findFood(name);
         if (food != null) {
             food.setOrigin(newOrigin);
-            System.out.println("Le pays d'origine de " + name + " a été mis à jour.");
+            System.out.println("The origin of " + name + " has been updated.");
+            saveFoodCatalog();
         } else {
-            System.out.println("Aliment non trouvé.");
+            System.out.println("Food not found.");
         }
     }
 
     public void handleRequest(String foodName) {
-        addFood(foodName, "Demande en cours");
-        System.out.println("La demande pour " + foodName + " a été ajoutée.");
+        // Imaginons que chaque demande ajoute food avec une origine spéciale pour indiquer que c'est une demande.
+        addFood(foodName, "Requested");
+        System.out.println("The request for " + foodName + " has been added and will be reviewed.");
     }
 
+
     public void handleComplaint(String foodName) {
-        System.out.println("La plainte concernant la non-disponibilité de " + foodName + " a été enregistrée.");
+        // Imaginons que nous enregistrons les plaintes dans un fichier séparé pour un examen ultérieur.
+        String complaintsFilePath = "foodComplaints.txt";
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(complaintsFilePath, true))) {
+            bw.write("Complaint about the non-availability of " + foodName);
+            bw.newLine();
+        } catch (IOException e) {
+            System.out.println("Error recording complaint about " + foodName);
+        }
+        System.out.println("The complaint about the non-availability of " + foodName + " has been recorded.");
     }
+
     public void saveFoodCatalog() {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (Food food : foodCatalog) {
-                bufferedWriter.write(food.getName() + "," + food.getOrigin());
+            FoodNode current = this.head;
+            while (current != null) {
+                bufferedWriter.write(current.food.getName() + "," + current.food.getOrigin());
                 bufferedWriter.newLine();
+                current = current.next;
             }
         } catch (IOException e) {
             System.out.println("Error writing to file '" + FILE_PATH + "'");
@@ -70,13 +109,12 @@ public class Administrator {
     }
 
     public void loadFoodCatalog() {
-        foodCatalog.clear();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length >= 2) {
-                    foodCatalog.add(new Food(parts[0], parts[1]));
+                if (parts.length == 2) {
+                    addFood(parts[0], parts[1]);
                 }
             }
         } catch (FileNotFoundException e) {
